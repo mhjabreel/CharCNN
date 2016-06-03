@@ -16,7 +16,7 @@ Then, run the training.py file as below:
 $ python training.py
 ```
 
-License
+## License
 
 Copyright (c) 2016 Minh Ngo
 
