@@ -3,6 +3,8 @@ This repository contains my implementation using TensorFlow for text classificat
 
 Xiang Zhang, Junbo Zhao, Yann LeCun. [Character-level Convolutional Networks for Text Classification](http://arxiv.org/abs/1509.01626). Advances in Neural Information Processing Systems 28 (NIPS 2015)
 
+![Alt text](ccnn.png?raw=true "The model")
+
 ## How to use
 First, specify the training and testing data sources in the config.py file.
 
