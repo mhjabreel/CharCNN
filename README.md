@@ -18,6 +18,6 @@ $ python training.py
 
 ## License
 
-Copyright (c) 2016 Minh Ngo
+Copyright (c) 2016 Mohammed Jabreel
 
 The source code is distributed under the MIT license.
