@@ -25,13 +25,13 @@ class CharConvNet(object):
         seed = time.time()
         
         tf.set_random_seed(seed)
-        with tf.name_scope("InputLayer"):
+        with tf.name_scope("Input-Layer"):
             #Model inputs
             self.input_x = tf.placeholder(tf.int64, shape = [None, l0], name='input_x')
             self.input_y = tf.placeholder(tf.float32, shape = [None, no_of_classes], name = 'input_y')
             self.dropout_keep_prob = tf.placeholder(tf.float32, name="dropout_keep_prob")
         
-        with tf.name_scope("QuntizationLayer"), tf.device('/cpu:0'):
+        with tf.name_scope("Embedding-Layer"), tf.device('/cpu:0'):
             #Quantization layer
             
             Q = tf.concat(0,
@@ -51,7 +51,7 @@ class CharConvNet(object):
         # Convolution layers
         for i, cl in enumerate(conv_layers):
             var_id += 1 
-            with tf.name_scope("ConvolutionLayer%d" % (i + 1)):
+            with tf.name_scope("ConvolutionLayer"):
                 filter_width = x.get_shape()[2].value
                 filter_shape = [cl[1], filter_width, 1, cl[0]] # Perform 1D conv with [kw, inputFrameSize (i.e alphabet_size), outputFrameSize]
                 # Convolution layer
@@ -63,13 +63,13 @@ class CharConvNet(object):
                 x = tf.nn.bias_add(conv, b)
                 
                 #Threshold
-            with tf.name_scope("Conv-ThresholdLayer%d" % (i + 1)):
+            with tf.name_scope("ThresholdLayer"):
                 x = tf.select(tf.less(x, th), tf.zeros_like(x), x)
 
                 
 
             if not cl[-1] is None:
-                with tf.name_scope("MaxPoolingLayer%d" % (i + 1)):
+                with tf.name_scope("MaxPoolingLayer" ):
                     # Maxpooling over the outputs
                     pool = tf.nn.max_pool(x, ksize=[1, cl[-1], 1, 1], strides=[1, cl[-1], 1, 1], padding='VALID')
                     x = tf.transpose(pool, [0, 1, 3, 2]) # [batch_size, img_width, img_height, 1]
@@ -80,7 +80,7 @@ class CharConvNet(object):
         with tf.name_scope("ReshapeLayer"):
             #Reshape layer
             vec_dim = x.get_shape()[1].value * x.get_shape()[2].value
-            print vec_dim
+            
             x = tf.reshape(x, [-1, vec_dim])
 
         
@@ -89,7 +89,7 @@ class CharConvNet(object):
         
         for i, fl in enumerate(fully_layers):
             var_id += 1
-            with tf.name_scope("LinearLayer%d" % (i + 1) ):
+            with tf.name_scope("LinearLayer" ):
                 #Fully-Connected layer
                 stdv = 1/sqrt(weights[i])
                 W = tf.Variable(tf.random_uniform([weights[i], fl], minval=-stdv, maxval=stdv), dtype='float32', name='W')
@@ -97,11 +97,11 @@ class CharConvNet(object):
                 
                 x = tf.nn.xw_plus_b(x, W, b)
                 
-            with tf.name_scope("Linear-ThresholdLayer%d" % (i + 1) ):
+            with tf.name_scope("ThresholdLayer" ):
                 x = tf.select(tf.less(x, th), tf.zeros_like(x), x)
                 
 
-            with tf.name_scope("DropoutLayer%d" % (i + 1)):
+            with tf.name_scope("DropoutLayer"):
                 # Add dropout
                 x = tf.nn.dropout(x, self.dropout_keep_prob)
                 
