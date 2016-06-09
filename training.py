@@ -34,14 +34,14 @@ if __name__ == '__main__':
 
     with tf.Graph().as_default():
         session_conf = tf.ConfigProto(allow_soft_placement = True,
-                                      log_device_placement = True)
+                                      log_device_placement = False)
 
         sess = tf.Session(config = session_conf)
 
         with sess.as_default():
 
             char_cnn = CharConvNet(conv_layers = config.model.conv_layers,
-                                   full_layers = config.model.fully_connected_layers,
+                                   fully_layers = config.model.fully_connected_layers,
                                    l0 = config.l0,
                                    alphabet_size = config.alphabet_size,
                                    no_of_classes = config.no_of_classes,
@@ -106,7 +106,7 @@ if __name__ == '__main__':
                 feed_dict = {
                   char_cnn.input_x: x_batch,
                   char_cnn.input_y: y_batch,
-                  char_cnn.dropout_prop: config.training.p
+                  char_cnn.dropout_keep_prob: config.training.p
                 }
                 _, step, summaries, loss, accuracy = sess.run(
                     [train_op,
@@ -127,7 +127,7 @@ if __name__ == '__main__':
                 feed_dict = {
                   char_cnn.input_x: x_batch,
                   char_cnn.input_y: y_batch,
-                  char_cnn.dropout_prop: 1.0 # Disable dropout
+                  char_cnn.dropout_keep_prob: 1.0 # Disable dropout
                 }
                 step, summaries, loss, accuracy = sess.run(
                     [global_step,
