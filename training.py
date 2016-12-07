@@ -49,11 +49,22 @@ if __name__ == '__main__':
 
             global_step = tf.Variable(0, trainable=False)
             
-            learning_rate = tf.train.exponential_decay(config.training.base_rate,
-                                                       global_step,
-                                                       config.training.decay_step,
-                                                       config.training.decay_rate,
-                                                       staircase=True)
+            boundaries = []
+            br = config.training.base_rate
+            values = [br]
+            for i in range(1, 10):
+                values.append(br / (2 ** i))
+                boundaries.append(15000 * i)
+            values.append(br / (2 ** (i + 1)))
+            print(values)
+            print(boundaries)
+            learning_rate = tf.train.piecewise_constant(global_step, boundaries, values)
+
+            #learning_rate = tf.train.exponential_decay(config.training.base_rate,
+            #                                           global_step,
+            #                                           config.training.decay_step,
+            #                                           config.training.decay_rate,
+            #                                           staircase=True)
 
             #optimizer = tf.train.MomentumOptimizer(learning_rate, config.training.momentum)
             optimizer = tf.train.AdamOptimizer(learning_rate)
