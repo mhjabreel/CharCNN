@@ -27,7 +27,7 @@ class Data(object):
 
     def loadData(self):
         data = []
-        with open(self.data_source, 'rb') as f:
+        with open(self.data_source, 'r') as f:
             rdr = csv.reader(f, delimiter=',', quotechar='"')
             for row in rdr:
                 txt = ""
@@ -36,7 +36,7 @@ class Data(object):
 
                 data.append ((int(row[0]), txt))
 
-        self.data = np.array(data)
+        self.data = np.asarray(data)
         self.shuffled_data = self.data
         
 
@@ -107,7 +107,7 @@ if __name__ == '__main__':
 ##    E = np.eye(4)
 ##    img = np.zeros((4, 15))
 ##    idxs = data.strToIndexs('aghgbccdahbaml')
-##    print idxs
+##    #print idxs
     
     data.loadData()
     with open("test.vec", "w") as fo:
@@ -123,7 +123,7 @@ if __name__ == '__main__':
 ##    for i in range(3):
 ##        data.shuffleData()
 ##        batch_x, batch_y = data.getBatchToIndices()
-##        print batch_x[0], batch_y[0]
+##        #print batch_x[0], batch_y[0]
         
 
             

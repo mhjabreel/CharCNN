@@ -34,11 +34,12 @@ class CharConvNet(object):
         with tf.name_scope("Embedding-Layer"), tf.device('/cpu:0'):
             #Quantization layer
             
-            Q = tf.concat(0,
+            Q = tf.concat(
                           [
                               tf.zeros([1, alphabet_size]), # Zero padding vector for out of alphabet characters
-                              tf.one_hot(range(alphabet_size), alphabet_size, 1.0, 0.0) # one-hot vector representation for alphabets
+                              tf.one_hot(list(range(alphabet_size)), alphabet_size, 1.0, 0.0) # one-hot vector representation for alphabets
                            ],
+                          0,
                           name='Q')
             
             x = tf.nn.embedding_lookup(Q, self.input_x)
@@ -64,7 +65,7 @@ class CharConvNet(object):
                 
                 #Threshold
             with tf.name_scope("ThresholdLayer"):
-                x = tf.select(tf.less(x, th), tf.zeros_like(x), x)
+                x = tf.where(tf.less(x, th), tf.zeros_like(x), x)
 
                 
 
@@ -98,7 +99,7 @@ class CharConvNet(object):
                 x = tf.nn.xw_plus_b(x, W, b)
                 
             with tf.name_scope("ThresholdLayer" ):
-                x = tf.select(tf.less(x, th), tf.zeros_like(x), x)
+                x = tf.where(tf.less(x, th), tf.zeros_like(x), x)
                 
 
             with tf.name_scope("DropoutLayer"):
@@ -119,7 +120,8 @@ class CharConvNet(object):
 
 
         with tf.name_scope('loss'):
-            losses = tf.nn.softmax_cross_entropy_with_logits(self.p_y_given_x, self.input_y)
+            #losses = tf.nn.softmax_cross_entropy_with_logits(self.p_y_given_x, self.input_y)
+            losses = tf.nn.softmax_cross_entropy_with_logits(logits=self.p_y_given_x,labels= self.input_y)
             self.loss = tf.reduce_mean(losses)
 
         with tf.name_scope("Accuracy"):
