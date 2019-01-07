@@ -1,0 +1,8 @@
+train:
+  batch_size: 100
+  train_steps: 50000
+  learning_rate: 0.0001
+  optimizer: 'adam'
+  model_dir: 'ckpts'
+  model_name: 'char_cnn'
+  export_best_ckpt: true 

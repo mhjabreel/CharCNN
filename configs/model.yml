@@ -1,0 +1,7 @@
+model:
+  model_type: char_cnn.py#CharCNN
+  model_params:
+    hidden_layers: [1024, 1024]
+    num_classes: 4
+    embeddings:
+      size: 100
