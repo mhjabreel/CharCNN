@@ -1,0 +1,16 @@
+data:
+  data_layer: data.py#CharCNNDataLayer
+  init_params:
+    vocab: "data/vocabs.txt"
+    labels_vocab: ["World",  "Sports", "Business", "Sci/Tech"]
+    unk_id: 0
+    max_len: 1014
+  train:
+    features_source: "data/train_texts.txt"
+    labels_source: "data/train_labels.txt"
+  dev:
+    features_source: "data/test_texts.txt"
+    labels_source: "data/test_labels.txt"  
+
+  others:
+    padding: false 
